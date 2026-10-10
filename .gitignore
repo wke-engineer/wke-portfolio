@@ -1,0 +1,6 @@
+# 工作区本地文件，不上传
+.workbuddy/
+.preview/
+*.log
+.DS_Store
+Thumbs.db

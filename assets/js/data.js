@@ -25,7 +25,7 @@ window.SITE_DATA = {
     workEmail: "13070655295@163.com",    // 工作/对外邮箱
     city: "河南 · 商丘",
     github: "https://github.com/wke-engineer",
-    website: "https://wke-engineer.github.io/wke-portfolio-v2/",
+    website: "https://wke-engineer.github.io/wke-portfolio/",
     wechat: "",
     jobTarget: "",
     available: ""

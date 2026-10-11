@@ -725,3 +725,14 @@ html[data-theme="dark"] .p-badge { background: rgba(17,26,46,.92); color: #eef2f
   .ed-nav { width: 130px; }
   .editor-actions .btn { padding: 6px 12px; font-size: .82rem; }
 }
+
+/* --------------------- 辅修微专业卡片 --------------------- */
+.minor-box {
+  margin-top: 14px; padding: 14px 16px;
+  background: var(--brand-soft);
+  border: 1px solid rgba(var(--brand-rgb), .22);
+  border-radius: var(--radius-sm);
+}
+.minor-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.minor-name { font-weight: 700; color: var(--brand); font-size: .98rem; }
+.tag-brand { background: rgba(var(--brand-rgb), .12); color: var(--brand); border-color: rgba(var(--brand-rgb), .3); }

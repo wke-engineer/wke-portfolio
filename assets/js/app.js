@@ -227,6 +227,15 @@
         (courses ? '<div class="tag-row">' +
             (e.coursesLabel ? '<span class="tag tag-label">' + esc(e.coursesLabel) + '</span>' : "") +
             courses + '</div>' : "") +
+        (e.minor ? '<div class="minor-box">' +
+            '<div class="minor-head"><span class="minor-name">' + esc(e.minor.name) + '</span>' +
+              (e.minor.period ? '<span class="tl-period">' + esc(e.minor.period) + '</span>' : "") + '</div>' +
+            (e.minor.org ? '<div class="tl-meta">' + esc(e.minor.org) + '</div>' : "") +
+            (e.minor.desc ? '<p class="tl-desc">' + esc(e.minor.desc) + '</p>' : "") +
+            ((e.minor.courses || []).length ? '<div class="tag-row">' + e.minor.courses.map(function (c) {
+                return '<span class="tag tag-brand">' + esc(c) + '</span>';
+              }).join("") + '</div>' : "") +
+          '</div>' : "") +
         (honors ? '<ul class="tl-points" style="margin-top:12px">' + honors + '</ul>' : "") +
       '</div>';
     }).join(""));
@@ -517,6 +526,17 @@
             '</div>' +
             '<div class="rs-item-meta">' + esc([e.college, e.degree, e.location].filter(Boolean).join(" · ")) + '</div>' +
             (courses ? '<div class="rs-tags">' + courses + '</div>' : "") +
+            (e.minor ? '<div class="rs-item" style="margin-top:6px">' +
+              '<div class="rs-item-head">' +
+                '<span class="rs-item-title">' + esc(e.minor.name) + '</span>' +
+                (e.minor.org ? '<span class="rs-item-sub">' + esc(e.minor.org) + '</span>' : "") +
+                '<span class="rs-item-date">' + esc(e.minor.period || "") + '</span>' +
+              '</div>' +
+              (e.minor.desc ? '<div class="rs-item-meta">' + esc(e.minor.desc) + '</div>' : "") +
+              ((e.minor.courses || []).length ? '<div class="rs-tags">' + e.minor.courses.map(function (c) {
+                  return '<span class="rs-tag">' + esc(c) + '</span>';
+                }).join("") + '</div>' : "") +
+            '</div>' : "") +
             (honors ? '<ul class="rs-list">' + honors + '</ul>' : "") +
           '</div>';
         }).join("") + '</div>';

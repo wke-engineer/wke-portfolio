@@ -1,8 +1,8 @@
 /* =========================================================================
- *  data.js —— 全站唯一数据源
+ *  data.js —— 全站唯一数据源（v2）
  *  ---------------------------------------------------------------------
  *  王可儿的个人主页 · 改这一个文件，网站页面 + 一键导出的简历会同步更新。
- *  带「TODO」的地方是还需要你自己补充的内容。
+ *  也可以直接在网站上点右上角「✏️ 编辑内容」在浏览器里改，改完点保存即可。
  * ========================================================================= */
 
 window.SITE_DATA = {
@@ -11,7 +11,7 @@ window.SITE_DATA = {
   profile: {
     name: "王可儿",
     enName: "WANG Keer",
-    avatar: "assets/img/avatar.svg",   // TODO: 换成你的照片，比如 assets/img/me.jpg
+    avatar: "assets/img/avatar.svg",
     eyebrow: "商丘师范学院 · 地理信息科学 · 大二在读",
     title: "地理信息科学 × 内容运营 × AI Agent 学习者",
     summary: "商丘师范学院地理信息科学专业大二在读。做过一段互联网线上运营推广实习，" +
@@ -20,13 +20,13 @@ window.SITE_DATA = {
              "正在把学到的东西变成一个个真实项目。",
     badge: "GPA 3.93 / 5.0",
 
-    // TODO: 电话和邮箱留空了（不想公开可以一直不填），填上后会出现在首屏/联系区/简历里
     phone: "",
-    email: "",
+    email: "1399509752@qq.com",          // 私人邮箱
+    workEmail: "13070655295@163.com",    // 工作/对外邮箱
     city: "河南 · 商丘",
     github: "https://github.com/wke-engineer",
-    website: "",                       // TODO: 网站的线上地址（发布后可以填这里）
-    wechat: "",                        // TODO: 想留微信就填上
+    website: "https://wke-engineer.github.io/wke-portfolio-v2/",
+    wechat: "",
     jobTarget: "",
     available: ""
   },
@@ -35,24 +35,69 @@ window.SITE_DATA = {
   stats: [
     { value: "3.93", unit: "/5.0", label: "加权 GPA" },
     { value: "5",    unit: "个",   label: "内容平台账号" },
-    { value: "3",    unit: "个",   label: "筹备中的项目" },
+    { value: "3",    unit: "个",   label: "进行中的项目" },
     { value: "1",    unit: "段",   label: "互联网实习" }
   ],
+
+  /* --------------------------- 受众视角模式 ---------------------------
+   * 不同对象关心不同的东西。切换视角后：
+   *  1) 首屏简介换成该视角的文案
+   *  2) 页面板块按 order 重新排序，越靠前越突出
+   *  3) 一键导出的简历同步使用该视角的简介与板块顺序
+   * order 里没列出的板块会被暂时隐藏（想全部显示就不切换视角）。
+   * ------------------------------------------------------------------ */
+  audience: {
+    intro: "针对不同对象，展示不同的重点：",
+    modes: [
+      {
+        key: "default", label: "完整版",
+        summary: "",
+        order: ["education", "internship", "project", "media", "award", "certificate", "volunteer", "skill"],
+        note: "展示全部内容，适合日常浏览。"
+      },
+      {
+        key: "hr", label: "求职 HR",
+        summary: "地理信息科学专业大二学生，有一段互联网线上运营推广实习经历，多平台爆款视频产出经验；" +
+                 "正在自学 Python / MySQL / AI Agent 开发，并把学习成果沉淀为三个真实项目（见 GitHub）。" +
+                 "执行力强、数据敏感，能快速上手内容运营与推广类工作。",
+        order: ["internship", "project", "skill", "media", "education", "award", "certificate", "volunteer"],
+        note: "实习与项目优先，突出执行力与岗位匹配度。"
+      },
+      {
+        key: "kaoyan", label: "考研导师",
+        summary: "商丘师范学院地理信息科学专业大二在读，加权 GPA 3.93 / 5.0，专业基础扎实。" +
+                 "对 GIS 与人工智能的交叉方向有浓厚兴趣，2026 年 9 月起系统自学 Python、MySQL、数据结构" +
+                 "与 AI Agent 开发，并以真实项目驱动学习（全部开源在 GitHub）。" +
+                 "动手实践能力强，期望在深造阶段深入空间信息与智能体方向。",
+        order: ["education", "project", "award", "volunteer", "internship", "skill", "certificate", "media"],
+        note: "学业成绩与科研潜力优先，弱化自媒体。"
+      },
+      {
+        key: "abroad", label: "留学考官",
+        summary: "Geoinformation Science undergraduate at Shangqiu Normal University (GPA 3.93/5.0, top-tier)." +
+                 "Strong interest in the intersection of GIS and artificial intelligence: self-studying Python, " +
+                 "MySQL, data structures and AI Agent development since Sept 2026, with all learning outcomes " +
+                 "open-sourced on GitHub. Also experienced in new-media operations with multiple viral video " +
+                 "campaigns across Douyin, Xiaohongshu, Channels and Kuaishou.",
+        order: ["education", "project", "award", "volunteer", "internship", "skill", "certificate", "media"],
+        note: "学术表现 + 综合素养 + 英文简介优先。"
+      }
+    ]
+  },
 
   /* --------------------------- 教育背景 --------------------------- */
   educationDesc: "在读专业、成绩表现与专业主要课程。",
   education: [
     {
       school: "商丘师范学院",
-      college: "",                     // TODO: 想写学院名可以填，例如你的学院全称
+      college: "",
       major: "地理信息科学（本科）",
       degree: "理学学士",
       period: "2025.09 – 2029.06",
       gpa: "3.93 / 5.0",
-      rank: "",                        // TODO: 有排名可以填，例如「专业排名 第 8 名」
+      rank: "",
       location: "河南 · 商丘",
       coursesLabel: "专业主要课程",
-      // 暂时只列课程名，出成绩后可在后面加 score 字段，例如 { name: "地图学", score: "95" }
       courses: [
         { name: "地图学" },
         { name: "地理信息科学导论" },
@@ -88,41 +133,56 @@ window.SITE_DATA = {
     }
   ],
 
-  /* --------------------------- 项目作品 --------------------------- */
-  projectDesc: "三个项目正在筹备中，完成后会补充项目介绍、我负责的部分和用到的技术。",
+  /* --------------------------- 项目作品 ---------------------------
+   * 三个项目全部开源在 GitHub，按重要性排序展示。
+   * emoji 字段是卡片上的「可爱标识」，可以随意换成喜欢的表情。
+   * ---------------------------------------------------------------- */
+  projectDesc: "三个项目全部开源在 GitHub（wke-engineer），按重要性排序，持续开发中。",
   projects: [
     {
-      title: "项目一 · 筹备中",
-      type: "筹备中",
-      period: "2026.10 起",
-      pending: true,
+      title: "KingPath · 每日计划与理财管理",
+      type: "全栈应用",
+      period: "2026 进行中",
+      emoji: "🚀",
+      badge: "主力项目",
       cover: "",
-      summary: "项目正在筹备中，完成后会更新在这里。",
-      highlights: [],
-      stack: [],
-      links: []
+      summary: "每日固定计划提醒 + 理财管理工具，React PWA + Node/Prisma 全栈实现，随时随地记录与提醒。",
+      highlights: [
+        "React PWA 架构，手机桌面可直接安装使用",
+        "Node.js + Prisma 后端，数据云端同步",
+        "TypeScript 全栈类型安全"
+      ],
+      stack: ["TypeScript", "React", "Node.js", "Prisma", "PWA"],
+      links: [{ label: "GitHub 仓库", url: "https://github.com/wke-engineer/kingpath" }]
     },
     {
-      title: "项目二 · 筹备中",
-      type: "筹备中",
-      period: "2026.10 起",
-      pending: true,
+      title: "Agent 280 天成长计划",
+      type: "AI Agent",
+      period: "2026.09 起",
+      emoji: "🤖",
+      badge: "自学主线",
       cover: "",
-      summary: "项目正在筹备中，完成后会更新在这里。",
-      highlights: [],
-      stack: [],
-      links: []
+      summary: "280 天 AI Agent 开发者成长之旅：以日更实践记录 Python、数据结构、MySQL 与 Agent 开发的学习路径。",
+      highlights: [
+        "以项目驱动学习，每个知识点都落成代码",
+        "公开学习路线与进度，可被复用与检验"
+      ],
+      stack: ["Python", "AI Agent", "数据结构", "MySQL"],
+      links: [{ label: "GitHub 仓库", url: "https://github.com/wke-engineer/agent-280-days" }]
     },
     {
-      title: "项目三 · 筹备中",
-      type: "筹备中",
-      period: "2026.10 起",
-      pending: true,
+      title: "Homie · 居家小助手",
+      type: "应用开发",
+      period: "2026 进行中",
+      emoji: "🏠",
+      badge: "新手上路",
       cover: "",
-      summary: "项目正在筹备中，完成后会更新在这里。",
-      highlights: [],
-      stack: [],
-      links: []
+      summary: "Homie 的家 —— 一个正在学习中的 Python 小项目，边学边做，记录成长。",
+      highlights: [
+        "Python 实践项目，用于巩固自学成果"
+      ],
+      stack: ["Python"],
+      links: [{ label: "GitHub 仓库", url: "https://github.com/wke-engineer/-" }]
     }
   ],
 
@@ -130,32 +190,50 @@ window.SITE_DATA = {
   mediaDesc: "在多个平台做过内容创作与分发，产出过爆款视频；目前业余运营两个自己的抖音号。",
   media: {
     intro: "在抖音、小红书、视频号、快手等平台均有内容创作与分发经验，多条视频成为爆款；" +
-           "现在业余时间运营两个抖音账号，各自都有爆款视频产出。",
+           "现在业余时间运营两个抖音账号「挚友」和「22er」，各自都有爆款视频产出。" +
+           "（出于隐私考虑，具体账号 ID 暂不公开，可私下交流）",
 
-    // main / mainLabel 会作为卡片上的大号数字展示；也可以在 meta 里加自定义小指标
     platforms: [
-      { name: "抖音号 ①", handle: "个人账号", main: "有爆款视频", mainLabel: "内容成绩",
-        meta: [{ k: "状态", v: "持续更新" }], url: "" },
-      { name: "抖音号 ②", handle: "个人账号", main: "有爆款视频", mainLabel: "内容成绩",
-        meta: [{ k: "状态", v: "持续更新" }], url: "" },
+      { name: "抖音号 · 挚友",  handle: "个人账号", main: "有爆款视频", mainLabel: "内容成绩",
+        meta: [{ k: "状态", v: "持续更新" }, { k: "账号", v: "私聊可见" }], url: "" },
+      { name: "抖音号 · 22er",  handle: "个人账号", main: "有爆款视频", mainLabel: "内容成绩",
+        meta: [{ k: "状态", v: "持续更新" }, { k: "账号", v: "私聊可见" }], url: "" },
       { name: "小红书",   handle: "内容分发", main: "有爆款笔记", mainLabel: "内容成绩",
-        meta: [{ k: "状态", v: "持续更新" }], url: "" },
+        meta: [{ k: "状态", v: "实习期间分发" }], url: "" },
       { name: "视频号",   handle: "内容分发", main: "有爆款视频", mainLabel: "内容成绩",
-        meta: [{ k: "状态", v: "持续更新" }], url: "" },
+        meta: [{ k: "状态", v: "实习期间分发" }], url: "" },
       { name: "快手",     handle: "内容分发", main: "有爆款视频", mainLabel: "内容成绩",
-        meta: [{ k: "状态", v: "持续更新" }], url: "" }
+        meta: [{ k: "状态", v: "实习期间分发" }], url: "" }
     ],
 
-    // TODO: 把爆款作品换成真实标题 + 播放/点赞数据，url 填作品链接
     mediaWorks: [
-      { title: "抖音号 ① 爆款视频",   platform: "抖音",   metric: "待补充播放数据", url: "" },
-      { title: "抖音号 ② 爆款视频",   platform: "抖音",   metric: "待补充播放数据", url: "" },
+      { title: "抖音号「挚友」爆款视频",   platform: "抖音",   metric: "播放数据可私聊展示", url: "" },
+      { title: "抖音号「22er」爆款视频",   platform: "抖音",   metric: "播放数据可私聊展示", url: "" },
       { title: "多平台爆款内容产出", platform: "多平台", metric: "抖音 / 小红书 / 视频号 / 快手", url: "" }
     ]
   },
 
+  /* --------------------------- 志愿服务与社会实践 --------------------------- */
+  volunteerDesc: "社会实践与志愿服务经历。",
+  volunteers: [
+    {
+      title: "大学生寒假「三下乡」社会实践",
+      role: "团队成员",
+      period: "2026.01 – 2026.02",
+      org: "商丘师范学院",
+      desc: "作为团队成员参与寒假「三下乡」社会实践，所在团队获院级三等奖。"
+    },
+    {
+      title: "大学生暑期「三下乡」社会实践",
+      role: "团队成员",
+      period: "2026.06 – 2026.07",
+      org: "商丘师范学院",
+      desc: "作为团队成员参与暑期「三下乡」社会实践，所在团队获院级三等奖。"
+    }
+  ],
+
   /* --------------------------- 竞赛与荣誉 --------------------------- */
-  awardDesc: "大一寒假、暑期两次「三下乡」社会实践，所在团队均获院级三等奖。",
+  awardDesc: "社会实践团队奖项等荣誉。",
   awards: [
     { title: "大学生暑期「三下乡」社会实践", level: "院级三等奖", date: "2026.07",
       desc: "作为团队成员参与，所在团队获院级三等奖。" },
@@ -167,7 +245,6 @@ window.SITE_DATA = {
   certificateDesc: "语言、专业技能与职业资格等。",
   certificates: [
     { name: "全国计算机等级考试二级", issuer: "教育部教育考试院", date: "", score: "已通过", cover: "" }
-    // TODO: 拿到新证书后按上面格式继续添加；date 可留空；cover 里可填证书扫描件路径
   ],
 
   /* --------------------------- 技能栈 --------------------------- */

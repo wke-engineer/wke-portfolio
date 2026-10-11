@@ -52,7 +52,7 @@ window.SITE_DATA = {
       {
         key: "default", label: "完整版",
         summary: "",
-        order: ["education", "internship", "project", "media", "award", "certificate", "volunteer", "skill"],
+        order: ["education", "internship", "project", "media", "award", "volunteer", "organization", "certificate", "skill"],
         note: "展示全部内容，适合日常浏览。"
       },
       {
@@ -60,26 +60,26 @@ window.SITE_DATA = {
         summary: "地理信息科学专业大二学生，有一段互联网线上运营推广实习经历，多平台爆款视频产出经验；" +
                  "正在自学 Python / MySQL / AI Agent 开发，并把学习成果沉淀为三个真实项目（见 GitHub）。" +
                  "执行力强、数据敏感，能快速上手内容运营与推广类工作。",
-        order: ["internship", "project", "skill", "media", "education", "award", "certificate", "volunteer"],
+        order: ["internship", "project", "award", "organization", "skill", "media", "education", "volunteer", "certificate"],
         note: "实习与项目优先，突出执行力与岗位匹配度。"
       },
       {
         key: "kaoyan", label: "考研导师",
-        summary: "商丘师范学院地理信息科学专业大二在读，加权 GPA 3.93 / 5.0，专业基础扎实。" +
+        summary: "商丘师范学院地理信息科学专业大二在读，加权 GPA 3.93 / 5.0，辅修智能遥感微专业。" +
                  "对 GIS 与人工智能的交叉方向有浓厚兴趣，2026 年 9 月起系统自学 Python、MySQL、数据结构" +
                  "与 AI Agent 开发，并以真实项目驱动学习（全部开源在 GitHub）。" +
-                 "动手实践能力强，期望在深造阶段深入空间信息与智能体方向。",
-        order: ["education", "project", "award", "volunteer", "internship", "skill", "certificate", "media"],
+                 "参与易智瑞杯地理设计组等学科竞赛，动手实践与数据分析能力强，期望在深造阶段深入空间信息与智能体方向。",
+        order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
         note: "学业成绩与科研潜力优先，弱化自媒体。"
       },
       {
         key: "abroad", label: "留学考官",
-        summary: "Geoinformation Science undergraduate at Shangqiu Normal University (GPA 3.93/5.0, top-tier)." +
-                 "Strong interest in the intersection of GIS and artificial intelligence: self-studying Python, " +
-                 "MySQL, data structures and AI Agent development since Sept 2026, with all learning outcomes " +
-                 "open-sourced on GitHub. Also experienced in new-media operations with multiple viral video " +
-                 "campaigns across Douyin, Xiaohongshu, Channels and Kuaishou.",
-        order: ["education", "project", "award", "volunteer", "internship", "skill", "certificate", "media"],
+        summary: "Geoinformation Science undergraduate at Shangqiu Normal University (GPA 3.93/5.0, top-tier), " +
+                 "minoring in the Intelligent Remote Sensing micro-program. Strong interest in the intersection of " +
+                 "GIS and artificial intelligence: self-studying Python, MySQL, data structures and AI Agent " +
+                 "development since Sept 2026, with all learning outcomes open-sourced on GitHub. Experienced in " +
+                 "academic competitions (Esri Cup Geo-design track) and provincial-level sports event volunteering.",
+        order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
         note: "学术表现 + 综合素养 + 英文简介优先。"
       }
     ]
@@ -226,14 +226,21 @@ window.SITE_DATA = {
   },
 
   /* --------------------------- 志愿服务与社会实践 --------------------------- */
-  volunteerDesc: "社会实践与志愿服务经历。",
+  volunteerDesc: "省级赛会志愿服务与校内社会实践经历。",
   volunteers: [
     {
-      title: "大学生寒假「三下乡」社会实践",
-      role: "团队成员",
-      period: "2026.01 – 2026.02",
-      org: "商丘师范学院",
-      desc: "作为团队成员参与寒假「三下乡」社会实践，所在团队获院级三等奖。"
+      title: "山东省第十六届全民健身运动会「好运山东」射箭比赛志愿服务",
+      role: "赛会志愿者",
+      period: "2026.07.18 – 2026.07.19",
+      org: "省级赛会 · 山东",
+      desc: "负责引导、安检、计分与应急救护等岗位的志愿服务工作，保障赛事各环节顺畅运行。"
+    },
+    {
+      title: "齐鲁足球超级联赛志愿服务 · 淄博站",
+      role: "赛会志愿者",
+      period: "2026.07.19",
+      org: "省级赛会 · 淄博",
+      desc: "负责安检、闸机验票、观众引导及各类突发情况的现场处置，完成整场比赛的赛会服务保障。"
     },
     {
       title: "大学生暑期「三下乡」社会实践",
@@ -241,16 +248,72 @@ window.SITE_DATA = {
       period: "2026.06 – 2026.07",
       org: "商丘师范学院",
       desc: "作为团队成员参与暑期「三下乡」社会实践，所在团队获院级三等奖。"
+    },
+    {
+      title: "大学生寒假「三下乡」社会实践",
+      role: "团队成员",
+      period: "2026.01 – 2026.02",
+      org: "商丘师范学院",
+      desc: "作为团队成员参与寒假「三下乡」社会实践，所在团队获院级三等奖。"
     }
   ],
 
   /* --------------------------- 竞赛与荣誉 --------------------------- */
-  awardDesc: "社会实践团队奖项等荣誉。",
+  awardDesc: "学科竞赛与创新创业赛事经历（含备赛中与已完赛）。",
   awards: [
-    { title: "大学生暑期「三下乡」社会实践", level: "院级三等奖", date: "2026.07",
-      desc: "作为团队成员参与，所在团队获院级三等奖。" },
-    { title: "大学生寒假「三下乡」社会实践", level: "院级三等奖", date: "2026.02",
-      desc: "作为团队成员参与，所在团队获院级三等奖。" }
+    {
+      title: "首届「数智地理，慧能中原」科技创新创业大赛",
+      level: "备赛中",
+      status: "ongoing",
+      date: "2026.10",
+      desc: "已报名参赛，正在备赛（报名系统：数智地理创新创业大赛）。"
+    },
+    {
+      title: "北控水务杯第九届中国国际生态环境创新大赛",
+      level: "备赛中",
+      status: "ongoing",
+      date: "2026.10",
+      desc: "已报名参赛，正在备赛，方向为生态环境领域创新方案。"
+    },
+    {
+      title: "第十八届蓝桥杯全国软件和信息技术专业人才大赛",
+      level: "备赛中",
+      status: "ongoing",
+      date: "2026.10",
+      desc: "已报名备赛中，结合 Python 与算法基础的系统训练。"
+    },
+    {
+      title: "易智瑞杯 B 组 · 地理设计组（B1001）",
+      level: "已完赛",
+      status: "done",
+      date: "2026.08",
+      desc: "参赛作品《自然-人为复合影响下长江中游城市群植被增绿的空间异质性与非线性响应》，已完成比赛提交。"
+    },
+    {
+      title: "大学生暑期「三下乡」社会实践",
+      level: "院级三等奖",
+      status: "done",
+      date: "2026.07",
+      desc: "作为团队成员参与，所在团队获院级三等奖。"
+    },
+    {
+      title: "大学生寒假「三下乡」社会实践",
+      level: "院级三等奖",
+      status: "done",
+      date: "2026.02",
+      desc: "作为团队成员参与，所在团队获院级三等奖。"
+    }
+  ],
+
+  /* --------------------------- 校园组织与社团 --------------------------- */
+  orgDesc: "校内工作室与组织任职。",
+  organizations: [
+    {
+      name: "校创「北斗行」工作室",
+      role: "宣传部成员",
+      period: "2026.10 起",
+      desc: "加入校创北斗行工作室宣传部，负责工作室的内容宣传与新媒体运营相关工作。"
+    }
   ],
 
   /* --------------------------- 证书与资质 --------------------------- */

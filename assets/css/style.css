@@ -736,3 +736,9 @@ html[data-theme="dark"] .p-badge { background: rgba(17,26,46,.92); color: #eef2f
 .minor-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
 .minor-name { font-weight: 700; color: var(--brand); font-size: .98rem; }
 .tag-brand { background: rgba(var(--brand-rgb), .12); color: var(--brand); border-color: rgba(var(--brand-rgb), .3); }
+
+/* --------------------- 竞赛「备赛中」状态 --------------------- */
+.award-item.is-ongoing { border-left: 3px solid var(--brand); }
+.award-item.is-ongoing .award-medal { color: var(--brand); }
+.award-level.is-ongoing { background: var(--brand); color: #fff; }
+.tl-title svg + * { }

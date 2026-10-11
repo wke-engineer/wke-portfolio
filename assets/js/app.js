@@ -91,7 +91,7 @@
   /* =======================================================================
    *  受众视角模式
    * ===================================================================== */
-  var ALL_SECTIONS = ["education", "internship", "project", "media", "award", "certificate", "volunteer", "skill"];
+  var ALL_SECTIONS = ["education", "internship", "project", "media", "award", "volunteer", "organization", "certificate", "skill"];
   var MODES = (D.audience && D.audience.modes) || [];
   var currentModeKey = "default";
   var originalSummary = (D.profile && D.profile.summary) || "";
@@ -395,16 +395,34 @@
   function renderAwards() {
     txt($("#awardDesc"), D.awardDesc || "");
     setHTML($("#awardList"), (D.awards || []).map(function (a) {
-      return '<div class="award-item reveal">' +
+      var ongoing = a.status === "ongoing";
+      return '<div class="award-item reveal' + (ongoing ? " is-ongoing" : "") + '">' +
         '<div class="award-medal">' + I.award + '</div>' +
         '<div class="award-main">' +
           '<div class="award-title">' + esc(a.title) + '</div>' +
           (a.desc ? '<div class="award-desc">' + esc(a.desc) + '</div>' : "") +
         '</div>' +
         '<div class="award-right">' +
-          (a.level ? '<span class="award-level">' + esc(a.level) + '</span>' : "") +
+          (a.level ? '<span class="award-level' + (ongoing ? " is-ongoing" : "") + '">' + esc(a.level) + '</span>' : "") +
           (a.date ? '<div class="award-date">' + esc(a.date) + '</div>' : "") +
         '</div>' +
+      '</div>';
+    }).join(""));
+  }
+
+  /* =======================================================================
+   *  8.5 校园组织与社团
+   * ===================================================================== */
+  function renderOrganizations() {
+    txt($("#orgDesc"), D.orgDesc || "");
+    setHTML($("#orgList"), (D.organizations || []).map(function (o) {
+      return '<div class="tl-item reveal">' +
+        '<div class="tl-head">' +
+          '<span class="tl-title">' + I.briefcase + esc(o.name) + '</span>' +
+          (o.role ? '<span class="tl-sub">' + esc(o.role) + '</span>' : "") +
+          (o.period ? '<span class="tl-period">' + esc(o.period) + '</span>' : "") +
+        '</div>' +
+        (o.desc ? '<p class="tl-desc">' + esc(o.desc) + '</p>' : "") +
       '</div>';
     }).join(""));
   }
@@ -591,6 +609,16 @@
         }).join("") + '</ul></div>';
     }
 
+    /* ---- 校园组织 ---- */
+    if ((D.organizations || []).length) {
+      secs.organization = '<div class="rs-sec"><div class="rs-sec-title">校园组织与社团</div><ul class="rs-list">' +
+        D.organizations.map(function (o) {
+          return '<li><b>' + esc(o.name) + '</b>　' + esc(o.role || "") +
+            (o.period ? '　<span style="color:#6b7a90">' + esc(o.period) + '</span>' : "") +
+            (o.desc ? '<br><span style="color:#5a6780">' + esc(o.desc) + '</span>' : "") + '</li>';
+        }).join("") + '</ul></div>';
+    }
+
     /* ---- 竞赛荣誉 ---- */
     if ((D.awards || []).length) {
       secs.award = '<div class="rs-sec"><div class="rs-sec-title">竞赛荣誉</div><ul class="rs-list">' +
@@ -733,6 +761,7 @@
     mediaDesc: "📱 自媒体", media: "📱 自媒体",
     volunteerDesc: "❤️ 志愿", volunteers: "❤️ 志愿服务",
     awardDesc: "🏅 竞赛", awards: "🏅 竞赛荣誉",
+    orgDesc: "🏫 组织", organizations: "🏫 校园组织",
     certificateDesc: "📜 证书", certificates: "📜 证书资质",
     skillDesc: "🛠 技能", skills: "🛠 技能栈", contactText: "💬 联系区", footerText: "🦶 页脚"
   };
@@ -848,6 +877,7 @@
     renderMedia();
     renderVolunteers();
     renderAwards();
+    renderOrganizations();
     renderCertificates();
     renderSkills();
     renderContacts();
@@ -1006,6 +1036,7 @@
     renderMedia();
     renderVolunteers();
     renderAwards();
+    renderOrganizations();
     renderCertificates();
     renderSkills();
     renderContacts();

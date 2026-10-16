@@ -742,3 +742,35 @@ html[data-theme="dark"] .p-badge { background: rgba(17,26,46,.92); color: #eef2f
 .award-item.is-ongoing .award-medal { color: var(--brand); }
 .award-level.is-ongoing { background: var(--brand); color: #fff; }
 .tl-title svg + * { }
+
+/* --------------------- 科研项目进展记录 --------------------- */
+.research-log {
+  margin-top: 28px; padding: 22px 24px;
+  background: var(--surface); border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--radius); box-shadow: var(--shadow-sm);
+}
+.rl-head { margin-bottom: 16px; }
+.rl-title { font-size: 1.05rem; color: var(--text); }
+.rl-desc { margin-top: 4px; color: var(--muted); font-size: .9rem; }
+.rl-list { display: flex; flex-direction: column; gap: 2px; }
+.rl-item {
+  display: flex; gap: 16px; align-items: flex-start;
+  padding: 12px 0; border-top: 1px dashed var(--border);
+}
+.rl-item:first-child { border-top: none; }
+.rl-date {
+  flex-shrink: 0; min-width: 78px;
+  font-size: .82rem; font-weight: 700; color: var(--brand);
+  font-variant-numeric: tabular-nums; padding-top: 2px;
+}
+.rl-item.is-todo .rl-date { color: var(--muted); }
+.rl-item.is-todo { opacity: .72; }
+.rl-body { flex: 1; min-width: 0; }
+.rl-item-title { font-weight: 600; font-size: .95rem; }
+.rl-item-desc { margin-top: 3px; color: var(--text-2); font-size: .9rem; line-height: 1.65; }
+
+@media (max-width: 640px) {
+  .rl-item { flex-direction: column; gap: 4px; }
+  .rl-date { padding-top: 0; }
+}

@@ -287,6 +287,7 @@
 
   function renderProjects() {
     txt($("#projectDesc"), D.projectDesc || "");
+    renderResearchLog();
     var list = (D.projects || []).filter(function (p) {
       return projectFilterKey === "全部" || p.type === projectFilterKey;
     });
@@ -322,6 +323,33 @@
       '</article>';
     }).join(""));
     observeReveal();
+  }
+
+  /* 科研项目进展记录（可自由增删，数据在 data.js 的 researchLog） */
+  function renderResearchLog() {
+    var box = $("#researchLogBox");
+    if (!box) return;
+    var list = D.researchLog || [];
+    if (!list.length) { box.style.display = "none"; setHTML(box, ""); return; }
+    box.style.display = "";
+    setHTML(box,
+      '<div class="rl-head">' +
+        '<h3 class="rl-title">' + esc(D.researchLogTitle || "项目进展记录") + '</h3>' +
+        (D.researchLogDesc ? '<p class="rl-desc">' + esc(D.researchLogDesc) + '</p>' : "") +
+      '</div>' +
+      '<div class="rl-list">' +
+      list.map(function (r) {
+        var todo = (r.date || "").indexOf("待补充") === 0;
+        return '<div class="rl-item' + (todo ? " is-todo" : "") + '">' +
+          '<span class="rl-date">' + esc(r.date || "") + '</span>' +
+          '<div class="rl-body">' +
+            '<div class="rl-item-title">' + esc(r.title || "") + '</div>' +
+            (r.desc ? '<div class="rl-item-desc">' + esc(r.desc) + '</div>' : "") +
+          '</div>' +
+        '</div>';
+      }).join("") +
+      '</div>'
+    );
   }
 
   /* =======================================================================
@@ -580,8 +608,7 @@
 
     /* ---- 项目经历 ---- */
     if ((D.projects || []).length) {
-      secs.project = '<div class="rs-sec"><div class="rs-sec-title">项目经历</div>' +
-        D.projects.map(function (pr) {
+      var projHtml = D.projects.map(function (pr) {
           var pts = (pr.highlights || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
           var stack = (pr.stack || []).map(function (s) { return '<span class="rs-tag rs-tag-plain">' + esc(s) + '</span>'; }).join("");
           var linkTxt = (pr.links || []).map(function (l) { return esc(l.url); }).join(" ");
@@ -596,7 +623,17 @@
             (pts ? '<ul class="rs-list">' + pts + '</ul>' : "") +
             (stack ? '<div class="rs-tags">' + stack + '</div>' : "") +
           '</div>';
-        }).join("") + '</div>';
+        }).join("");
+      /* 科研项目进展（若有） */
+      if ((D.researchLog || []).length) {
+        projHtml += '<div class="rs-item-meta" style="margin-top:6px;font-weight:600">' +
+          esc(D.researchLogTitle || "项目进展记录") + '</div><ul class="rs-list">' +
+          D.researchLog.map(function (r) {
+            return '<li><span style="color:#6b7a90">' + esc(r.date || "") + '</span>　<b>' + esc(r.title || "") + '</b>' +
+              (r.desc ? '<br><span style="color:#5a6780">' + esc(r.desc) + '</span>' : "") + '</li>';
+          }).join("") + '</ul>';
+      }
+      secs.project = '<div class="rs-sec"><div class="rs-sec-title">项目经历</div>' + projHtml + '</div>';
     }
 
     /* ---- 志愿服务 ---- */
@@ -758,6 +795,7 @@
     educationDesc: "🎓 教育", education: "🎓 教育背景",
     internshipDesc: "💼 实习", internships: "💼 实习经历",
     projectDesc: "🚀 项目", projects: "🚀 项目作品",
+    researchLogTitle: "🛣️ 科研进展", researchLogDesc: "🛣️ 科研进展", researchLog: "🛣️ 科研进展",
     mediaDesc: "📱 自媒体", media: "📱 自媒体",
     volunteerDesc: "❤️ 志愿", volunteers: "❤️ 志愿服务",
     awardDesc: "🏅 竞赛", awards: "🏅 竞赛荣誉",

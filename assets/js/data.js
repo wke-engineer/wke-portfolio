@@ -66,19 +66,21 @@ window.SITE_DATA = {
       {
         key: "kaoyan", label: "考研导师",
         summary: "商丘师范学院地理信息科学专业大二在读，加权 GPA 3.93 / 5.0，辅修智能遥感微专业。" +
-                 "对 GIS 与人工智能的交叉方向有浓厚兴趣，2026 年 9 月起系统自学 Python、MySQL、数据结构" +
-                 "与 AI Agent 开发，并以真实项目驱动学习（全部开源在 GitHub）。" +
-                 "参与易智瑞杯地理设计组等学科竞赛，动手实践与数据分析能力强，期望在深造阶段深入空间信息与智能体方向。",
+                 "微专业期间独立完成基于 ResNet 的道路拓扑连接自动识别系统（迁移学习 + 混淆矩阵误差分析 + 工程化封装），" +
+                 "并参与导师「道路破损识别」科研项目，形成遥感 × 计算机视觉的研究兴趣主线。" +
+                 "自学 Python、MySQL、数据结构与 AI Agent 开发；GIS 应用小学期完成江苏省城市联系强度网络分析、" +
+                 "独立撰写遥感热环境监测小论文，期望在深造阶段深入空间信息与智能体方向。",
         order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
         note: "学业成绩与科研潜力优先，弱化自媒体。"
       },
       {
         key: "abroad", label: "留学考官",
-        summary: "Geoinformation Science undergraduate at Shangqiu Normal University (GPA 3.93/5.0, top-tier), " +
-                 "minoring in the Intelligent Remote Sensing micro-program. Strong interest in the intersection of " +
-                 "GIS and artificial intelligence: self-studying Python, MySQL, data structures and AI Agent " +
-                 "development since Sept 2026, with all learning outcomes open-sourced on GitHub. Experienced in " +
-                 "academic competitions (Esri Cup Geo-design track) and provincial-level sports event volunteering.",
+        summary: "Geoinformation Science undergraduate at Shangqiu Normal University (GPA 3.93/5.0), " +
+                 "minoring in the Intelligent Remote Sensing micro-program. Independently built a ResNet-based " +
+                 "road-topology recognition system (transfer learning, confusion-matrix error analysis, end-to-end " +
+                 "inference pipeline) and joined a supervisor's research project on road damage detection. " +
+                 "Self-studying Python, MySQL and AI Agent development since Sept 2026, with outcomes open-sourced " +
+                 "on GitHub. Also experienced in provincial-level sports event volunteering and new-media operations.",
         order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
         note: "学术表现 + 综合素养 + 英文简介优先。"
       }
@@ -149,8 +151,27 @@ window.SITE_DATA = {
    * 三个项目全部开源在 GitHub，按重要性排序展示。
    * emoji 字段是卡片上的「可爱标识」，可以随意换成喜欢的表情。
    * ---------------------------------------------------------------- */
-  projectDesc: "包含导师科研项目、三个开源项目（GitHub: wke-engineer），按重要性排序，持续更新中。",
+  projectDesc: "科研项目、微专业 AI 独立项目、课程实践与开源项目，按类型与重要性排序，持续更新中。",
   projects: [
+    {
+      title: "基于 ResNet 的道路拓扑连接自动识别系统",
+      type: "AI 算法",
+      period: "2026.10 · 独立完成",
+      emoji: "🧠",
+      badge: "微专业·个人项目",
+      cover: "",
+      summary: "针对地图道路拓扑关系（十字路口、环岛等）人工更新效率低下的痛点，独立探索使用计算机视觉技术" +
+               "实现道路交叉口类型的自动化分类，跑通了「数据获取 → 预处理 → 模型微调 → 自动化测试」的深度学习全流程闭环。",
+      highlights: [
+        "数据工程：利用地图开放平台及 LLM 辅助，构建十字路口 / 立体互通 / 环岛 / T 型路口 4 类样本约 187 张，按 130:28:29 划分训练/验证/测试集",
+        "迁移学习：小样本场景下采用 ResNet18 + ImageNet 预训练权重全参数微调（Epoch=30, Batch=12, LR=0.0005），纯 CPU 环境完成训练",
+        "误差分析（核心亮点）：验证集准确率 85.71%，测试集降至 51.72%；通过混淆矩阵定位瓶颈——十字/T 型路口召回为 0，源于单类样本仅 5 张且数据源单一导致过拟合背景风格",
+        "工程化封装：编写端到端推理脚本，一键输出分类结果与各类别 Precision / Recall / F1-Score 报告",
+        "迭代规划：引入强数据增强，扩充多厂商、多尺度（zoom 16/18）数据至每类 300 张以上，解决泛化能力弱的痛点"
+      ],
+      stack: ["Python", "PyTorch", "ResNet18", "OpenCV", "NumPy", "迁移学习"],
+      links: []
+    },
     {
       title: "道路破损识别（导师科研项目）",
       type: "科研项目",
@@ -167,6 +188,38 @@ window.SITE_DATA = {
         "项目成果后续会持续补充：算法方案、实验结果、论文/报告等"
       ],
       stack: ["Python", "计算机视觉", "图像处理", "遥感应用"],
+      links: []
+    },
+    {
+      title: "江苏省城市联系强度分析（GIS 应用小学期）",
+      type: "课程项目",
+      period: "2026 · 小学期 · 小组任务",
+      emoji: "🗺️",
+      badge: "专业实践",
+      cover: "",
+      summary: "GIS 应用课程小学期小组项目，以江苏省城市联系强度为分析对象，完成空间数据的构建、整理与全过程文档化。",
+      highlights: [
+        "创建交通网络数据集，构建城市间可达性分析的数据底座",
+        "整理道路行驶速度表，保障网络分析的参数准确性",
+        "独立承担操作过程全文档撰写，沉淀可复现的实验流程"
+      ],
+      stack: ["ArcGIS", "网络分析", "交通数据集", "文档撰写"],
+      links: []
+    },
+    {
+      title: "现代遥感技术进展及其在城市热环境监测中的应用与挑战",
+      type: "学术写作",
+      period: "2026 · 个人独立撰写",
+      emoji: "📄",
+      badge: "遥感导论·小论文",
+      cover: "",
+      summary: "遥感导论课程小论文，个人独立完成。综述现代遥感技术的最新进展，梳理其在城市热环境监测" +
+               "（地表温度反演、热岛效应分析等）中的典型应用，并分析当前面临的挑战与发展方向。",
+      highlights: [
+        "独立完成选题、文献调研、撰写全过程",
+        "聚焦城市热环境监测的遥感应用与挑战分析"
+      ],
+      stack: ["遥感原理", "文献综述", "学术写作"],
       links: []
     },
     {
@@ -217,18 +270,24 @@ window.SITE_DATA = {
   ],
 
   /* --------------------- 科研项目后续进展（持续补充区） ---------------------
-   * 导师科研项目「道路破损识别」的进展记录。有新增内容时往数组最前面加一条即可，
+   * 科研 / 项目的进展记录。有新增内容时往数组最前面加一条即可，
    * 日期用 YYYY.MM 格式；整块删掉也不会影响网站其他部分。
    * --------------------------------------------------------------------- */
-  researchLogTitle: "道路破损识别 · 进展记录",
-  researchLogDesc: "科研项目会随进展持续更新，以下为已完成 / 进行中的里程碑。",
+  researchLogTitle: "科研与项目 · 进展记录",
+  researchLogDesc: "科研项目与工程实践会随进展持续更新，以下为已完成 / 进行中的里程碑。",
   researchLog: [
-    { date: "2026.10", title: "加入课题组，项目启动",
+    { date: "2026.10 下旬", title: "加入学长项目，筹备「矿山」软件著作权",
+      desc: "即将参与学长的项目团队，参与「矿山」相关系统的开发与软件著作权申报材料的准备。" },
+    { date: "2026.10", title: "完成 ResNet 道路拓扑识别系统 v1，沉淀误差分析",
+      desc: "微专业个人项目：跑通深度学习全流程闭环，验证集 85.71% 准确率；通过混淆矩阵完成误差分析并制定数据增强与多源数据扩充的迭代方案。" },
+    { date: "2026.10", title: "微专业课程项目 + 遥感导论小论文完成",
+      desc: "GIS 应用小学期完成江苏省城市联系强度分析（负责交通网络数据集与全文档）；独立撰写遥感热环境监测小论文。" },
+    { date: "2026.10", title: "加入课题组，道路破损识别项目启动",
       desc: "开始参与导师科研项目，确定研究方向为道路破损的自动识别，进行资料调研与技术路线了解。" },
-    { date: "待补充", title: "数据集与实验方案",
+    { date: "待补充", title: "道路破损识别 · 数据集与实验方案",
       desc: "后续将补充数据集来源、预处理方式、模型选型与实验设计等内容。" },
-    { date: "待补充", title: "实验结果与成果",
-      desc: "后续将补充模型效果指标、可视化结果，以及论文 / 报告 / 专利等成果信息。" }
+    { date: "待补充", title: "「矿山」软著 · 申报进展",
+      desc: "后续将补充软著开发进度与申报材料完成情况。" }
   ],
 
   /* --------------------------- 自媒体 --------------------------- */
@@ -309,11 +368,11 @@ window.SITE_DATA = {
       desc: "已报名参赛，正在备赛，方向为生态环境领域创新方案。"
     },
     {
-      title: "第十八届蓝桥杯全国软件和信息技术专业人才大赛",
+      title: "第十八届蓝桥杯全国软件和信息技术专业人才大赛 · Python 程序设计 B 组",
       level: "备赛中",
       status: "ongoing",
       date: "2026.10",
-      desc: "已报名备赛中，结合 Python 与算法基础的系统训练。"
+      desc: "已报名 Python 程序设计 B 组，备赛中。非科班出身，正结合自学中的 Python 与数据结构系统训练算法能力。"
     },
     {
       title: "易智瑞杯 B 组 · 地理设计组（B1001）",

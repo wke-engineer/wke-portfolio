@@ -354,6 +354,13 @@ window.SITE_DATA = {
   awardDesc: "学科竞赛与创新创业赛事经历（含备赛中与已完赛）。",
   awards: [
     {
+      title: "河南省土地国情调查大赛",
+      level: "参赛中",
+      status: "ongoing",
+      date: "2026.11",
+      desc: "正在参加河南省土地国情调查大赛，围绕土地资源调查与国情分析开展实践。"
+    },
+    {
       title: "首届「数智地理，慧能中原」科技创新创业大赛",
       level: "备赛中",
       status: "ongoing",

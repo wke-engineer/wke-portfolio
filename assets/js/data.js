@@ -68,6 +68,7 @@ window.SITE_DATA = {
         summary: "商丘师范学院地理信息科学专业大二在读，加权 GPA 3.93 / 5.0，辅修智能遥感微专业。" +
                  "微专业期间独立完成基于 ResNet 的道路拓扑连接自动识别系统（迁移学习 + 混淆矩阵误差分析 + 工程化封装），" +
                  "并参与导师「道路破损识别」科研项目，形成遥感 × 计算机视觉的研究兴趣主线。" +
+                 "获易智瑞杯地理设计组三等奖（长江中游城市群植被增绿空间异质性研究），" +
                  "自学 Python、MySQL、数据结构与 AI Agent 开发；GIS 应用小学期完成江苏省城市联系强度网络分析、" +
                  "独立撰写遥感热环境监测小论文，期望在深造阶段深入空间信息与智能体方向。",
         order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
@@ -79,6 +80,8 @@ window.SITE_DATA = {
                  "minoring in the Intelligent Remote Sensing micro-program. Independently built a ResNet-based " +
                  "road-topology recognition system (transfer learning, confusion-matrix error analysis, end-to-end " +
                  "inference pipeline) and joined a supervisor's research project on road damage detection. " +
+                 "Won a Third Prize in the Esri Cup Geo-design track for a study on the spatial heterogeneity of " +
+                 "urban-agglomeration vegetation greening. " +
                  "Self-studying Python, MySQL and AI Agent development since Sept 2026, with outcomes open-sourced " +
                  "on GitHub. Also experienced in provincial-level sports event volunteering and new-media operations.",
         order: ["education", "award", "project", "volunteer", "organization", "internship", "skill", "certificate", "media"],
@@ -383,10 +386,10 @@ window.SITE_DATA = {
     },
     {
       title: "易智瑞杯 B 组 · 地理设计组（B1001）",
-      level: "已完赛",
-      status: "done",
+      level: "三等奖",
+      status: "won",
       date: "2026.08",
-      desc: "参赛作品《自然-人为复合影响下长江中游城市群植被增绿的空间异质性与非线性响应》，已完成比赛提交。"
+      desc: "参赛作品《自然-人为复合影响下长江中游城市群植被增绿的空间异质性与非线性响应》获 B 组地理设计组三等奖。"
     },
     {
       title: "大学生暑期「三下乡」社会实践",

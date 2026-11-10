@@ -424,14 +424,15 @@
     txt($("#awardDesc"), D.awardDesc || "");
     setHTML($("#awardList"), (D.awards || []).map(function (a) {
       var ongoing = a.status === "ongoing";
-      return '<div class="award-item reveal' + (ongoing ? " is-ongoing" : "") + '">' +
+      var won = a.status === "won";
+      return '<div class="award-item reveal' + (ongoing ? " is-ongoing" : "") + (won ? " is-won" : "") + '">' +
         '<div class="award-medal">' + I.award + '</div>' +
         '<div class="award-main">' +
           '<div class="award-title">' + esc(a.title) + '</div>' +
           (a.desc ? '<div class="award-desc">' + esc(a.desc) + '</div>' : "") +
         '</div>' +
         '<div class="award-right">' +
-          (a.level ? '<span class="award-level' + (ongoing ? " is-ongoing" : "") + '">' + esc(a.level) + '</span>' : "") +
+          (a.level ? '<span class="award-level' + (ongoing ? " is-ongoing" : "") + (won ? " is-won" : "") + '">' + esc(a.level) + '</span>' : "") +
           (a.date ? '<div class="award-date">' + esc(a.date) + '</div>' : "") +
         '</div>' +
       '</div>';
@@ -519,7 +520,14 @@
     var p = D.profile || {};
     var secs = {};   /* 板块字典，按当前视角 order 拼接 */
     var mode = getMode(currentModeKey) || {};
-    var order = mode.order || ALL_SECTIONS;
+    var hidden = mode.resumeHidden || [];
+    var order = (mode.resumeOrder || mode.order || ALL_SECTIONS).filter(function (id) {
+      return hidden.indexOf(id) === -1;
+    });
+    ALL_SECTIONS.forEach(function (id) {
+      if (order.indexOf(id) === -1 && hidden.indexOf(id) === -1 &&
+          (mode.resumeOrder || []).length) order.push(id);
+    });
 
     /* ---- 头部 ---- */
     var contacts = [];
@@ -548,13 +556,13 @@
     if (edu0.gpa) kv.push(['加权 GPA', edu0.gpa]);
     if (edu0.rank) kv.push(['专业排名', edu0.rank]);
     var overview = "";
-    if (kv.length) {
+    if (kv.length && hidden.indexOf("overview") === -1) {
       overview += '<div class="rs-sec"><div class="rs-sec-title">求职概况</div><div class="rs-cols">' +
         kv.map(function (x) {
           return '<div class="rs-kv"><span class="k">' + esc(x[0]) + '</span><span class="v">' + esc(x[1]) + '</span></div>';
         }).join("") + '</div></div>';
     }
-    if (p.summary) {
+    if (p.summary && hidden.indexOf("summary") === -1) {
       overview += '<div class="rs-sec"><div class="rs-sec-title">个人简介</div><p style="font-size:10pt;color:#2c3648">' + esc(p.summary) + '</p></div>';
     }
 
@@ -710,7 +718,9 @@
     if (overview) h.push(overview);
     order.forEach(function (id) { if (secs[id]) h.push(secs[id]); });
     /* order 之外的板块兜底追加，避免内容丢失 */
-    Object.keys(secs).forEach(function (id) { if (order.indexOf(id) === -1) h.push(secs[id]); });
+    Object.keys(secs).forEach(function (id) {
+      if (order.indexOf(id) === -1 && hidden.indexOf(id) === -1) h.push(secs[id]);
+    });
 
     h.push('<div class="rs-foot">本简历由个人主页一键生成 · ' + esc(p.name || "") + ' · ' +
       new Date().toLocaleDateString("zh-CN") + '</div>');
@@ -905,6 +915,240 @@
     setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
   }
 
+  /* =======================================================================
+   *  13. 简历在线编辑
+   *  只针对「导出简历」：基本信息 / 当前视角的简介 / 板块顺序与显示开关。
+   *  改动同样写进 localStorage 的 overrides，可撤销、可导出 data.js 永久保存。
+   * ===================================================================== */
+  var RE_LABELS = {
+    education: "🎓 教育背景", internship: "💼 实习经历", project: "🚀 项目经历",
+    media: "📱 自媒体运营", award: "🏅 竞赛荣誉", volunteer: "❤️ 志愿服务",
+    organization: "🏫 校园组织", certificate: "📜 证书资质", skill: "🛠 技能栈"
+  };
+
+  var RE_BASE_FIELDS = [
+    ["profile.name", "姓名", false],
+    ["profile.enName", "英文名", false],
+    ["profile.title", "头衔 / 一句话定位", true],
+    ["profile.phone", "手机", false],
+    ["profile.email", "邮箱", false],
+    ["profile.wechat", "微信", false],
+    ["profile.city", "城市", false],
+    ["profile.workEmail", "对外邮箱", true],
+    ["profile.github", "GitHub", true],
+    ["profile.website", "个人网站", true]
+  ];
+
+  var RE_OVERVIEW_FIELDS = [
+    ["profile.jobTarget", "求职意向"],
+    ["profile.available", "到岗时间"],
+    ["education.0.gpa", "加权 GPA"],
+    ["education.0.rank", "专业排名"]
+  ];
+
+  function modeIndex(key) {
+    for (var i = 0; i < MODES.length; i++) if (MODES[i].key === key) return i;
+    return 0;
+  }
+
+  function resumeConf() {
+    var mode = getMode(currentModeKey) || {};
+    var order = (mode.resumeOrder || mode.order || ALL_SECTIONS).slice();
+    ALL_SECTIONS.forEach(function (id) { if (order.indexOf(id) === -1) order.push(id); });
+    return { mode: mode, order: order, hidden: (mode.resumeHidden || []).slice() };
+  }
+
+  function resumeSummaryPath() {
+    return currentModeKey === "default"
+      ? "profile.summary"
+      : "audience.modes." + modeIndex(currentModeKey) + ".summary";
+  }
+
+  function reInput(path, label, full, multiline, rows) {
+    var v = deepGet(D, path);
+    if (v == null) v = "";
+    var body = multiline
+      ? '<textarea rows="' + (rows || 4) + '" data-path="' + esc(path) + '">' + esc(v) + "</textarea>"
+      : '<input type="text" data-path="' + esc(path) + '" value="' + esc(v) + '">';
+    return '<label class="re-field' + (full ? " full" : "") + '"><span>' + esc(label) + "</span>" + body + "</label>";
+  }
+
+  function openResumeEditor() {
+    var conf = resumeConf();
+    var mode = conf.mode || {};
+    var hid = conf.hidden;
+    var html = "";
+
+    html += '<div class="re-tip">这里改的是「导出简历」的内容。基本信息与简介会同步到网页；' +
+      "板块顺序与显示只影响简历本身。<br>要改项目、实习里的具体文字，请用页面右上角 ✏️ 的「编辑内容」。</div>";
+
+    html += '<fieldset class="re-group"><legend>基本信息</legend><div class="re-grid">' +
+      RE_BASE_FIELDS.map(function (f) { return reInput(f[0], f[1], f[2], false); }).join("") +
+      "</div></fieldset>";
+
+    html += '<fieldset class="re-group"><legend>当前视角 · ' + esc(mode.label || "完整版") + "</legend>" +
+      '<div class="re-grid">' +
+      reInput(resumeSummaryPath(), "个人简介（每个视角各有一份）", true, true, 5) +
+      RE_OVERVIEW_FIELDS.map(function (f) { return reInput(f[0], f[1], false, false); }).join("") +
+      "</div></fieldset>";
+
+    html += '<fieldset class="re-group"><legend>板块显示与顺序</legend><div class="re-sect-list" id="reSectList">';
+    html += '<div class="re-sect' + (hid.indexOf("overview") > -1 ? " off" : "") + '" data-id="overview">' +
+      '<label><input type="checkbox" data-show="overview"' + (hid.indexOf("overview") > -1 ? "" : " checked") + ">" +
+      " 💡 求职概况（GPA / 求职意向）</label></div>";
+    html += '<div class="re-sect' + (hid.indexOf("summary") > -1 ? " off" : "") + '" data-id="summary">' +
+      '<label><input type="checkbox" data-show="summary"' + (hid.indexOf("summary") > -1 ? "" : " checked") + ">" +
+      " 📝 个人简介</label></div>";
+
+    conf.order.forEach(function (id) {
+      var on = hid.indexOf(id) === -1;
+      html += '<div class="re-sect' + (on ? "" : " off") + '" data-id="' + esc(id) + '" data-moveable="1">' +
+        '<label><input type="checkbox" data-show="' + esc(id) + '"' + (on ? " checked" : "") + ">" +
+        " " + esc(RE_LABELS[id] || id) + "</label>" +
+        '<div class="re-move">' +
+        '<button type="button" data-move="-1" title="上移">↑</button>' +
+        '<button type="button" data-move="1" title="下移">↓</button>' +
+        "</div></div>";
+    });
+    html += "</div></fieldset>";
+
+    setHTML($("#resumeEditBody"), html);
+    bindResumeEditor();
+
+    var ov = $("#resumeEditOverlay");
+    ov.classList.add("open");
+    ov.setAttribute("aria-hidden", "false");
+    document.body.classList.add("no-scroll");
+  }
+
+  function bindResumeEditor() {
+    var list = $("#reSectList");
+
+    $$("#resumeEditBody input[type=checkbox]").forEach(function (cb) {
+      cb.addEventListener("change", function () {
+        var row = cb.closest(".re-sect");
+        if (row) row.classList.toggle("off", !cb.checked);
+      });
+    });
+
+    if (list) {
+      list.addEventListener("click", function (e) {
+        var btn = e.target.closest("button[data-move]");
+        if (!btn) return;
+        var row = btn.closest(".re-sect");
+        if (!row) return;
+        var dir = parseInt(btn.getAttribute("data-move"), 10);
+        if (dir < 0) {
+          var prev = row.previousElementSibling;
+          while (prev && !prev.hasAttribute("data-moveable")) prev = prev.previousElementSibling;
+          if (prev) list.insertBefore(row, prev);
+        } else {
+          var next = row.nextElementSibling;
+          while (next && !next.hasAttribute("data-moveable")) next = next.nextElementSibling;
+          if (next) list.insertBefore(next, row);
+        }
+        syncMoveButtons();
+      });
+      syncMoveButtons();
+    }
+  }
+
+  function syncMoveButtons() {
+    var rows = $$("#reSectList .re-sect[data-moveable]");
+    rows.forEach(function (r, i) {
+      var up = r.querySelector('button[data-move="-1"]');
+      var down = r.querySelector('button[data-move="1"]');
+      if (up) up.disabled = i === 0;
+      if (down) down.disabled = i === rows.length - 1;
+    });
+  }
+
+  function closeResumeEditor() {
+    var ov = $("#resumeEditOverlay");
+    if (!ov) return;
+    ov.classList.remove("open");
+    ov.setAttribute("aria-hidden", "true");
+    if (!$("#resumeOverlay") || !$("#resumeOverlay").classList.contains("open")) {
+      document.body.classList.remove("no-scroll");
+    }
+  }
+
+  function saveResumeEditor() {
+    var map = loadOverrides();
+    var idx = modeIndex(currentModeKey);
+    var conf = resumeConf();
+    var changed = 0;
+
+    /* 1) 文本字段 */
+    $$("#resumeEditBody [data-path]").forEach(function (el) {
+      var path = el.getAttribute("data-path");
+      var cur = deepGet(D, path);
+      if (cur == null) cur = "";
+      if (String(cur) !== el.value) {
+        map[path] = el.value;
+        deepSet(D, path, el.value);
+        changed++;
+      }
+    });
+
+    /* 2) 板块顺序 */
+    var order = $$("#reSectList .re-sect[data-moveable]").map(function (r) { return r.getAttribute("data-id"); });
+    if (order.join(",") !== conf.order.join(",")) {
+      map["audience.modes." + idx + ".resumeOrder"] = order;
+      deepSet(D, "audience.modes." + idx + ".resumeOrder", order);
+      changed++;
+    }
+
+    /* 3) 显示 / 隐藏 */
+    var hidden = [];
+    $$("#reSectList .re-sect").forEach(function (r) {
+      var cb = r.querySelector("input[data-show]");
+      if (cb && !cb.checked) hidden.push(r.getAttribute("data-id"));
+    });
+    if (hidden.join(",") !== conf.hidden.join(",")) {
+      map["audience.modes." + idx + ".resumeHidden"] = hidden;
+      deepSet(D, "audience.modes." + idx + ".resumeHidden", hidden);
+      changed++;
+    }
+
+    saveOverrides(map);
+
+    /* 同步当前视角简介并重渲染 */
+    var m = getMode(currentModeKey) || {};
+    if (D.profile) D.profile.summary = m.summary || originalSummary;
+    rerenderAll();
+
+    var sheet = $("#resumeSheet");
+    if (sheet && sheet.innerHTML.trim()) sheet.innerHTML = buildResume();
+
+    closeResumeEditor();
+    if (changed > 0) toast2("简历已更新（保存在本浏览器）");
+    else toast2("没有检测到修改");
+  }
+
+  function resetResumeEditor() {
+    if (!confirm("确定把简历恢复到初始状态吗？（只会清掉简历相关的修改，不影响 data.js 文件）")) return;
+    var map = loadOverrides();
+    var drop = /^(profile\.(name|enName|title|phone|email|workEmail|city|wechat|github|website|jobTarget|available|summary)|education\.0\.(gpa|rank)|audience\.modes\.\d+\.(summary|resumeOrder|resumeHidden))$/;
+    Object.keys(map).forEach(function (k) { if (drop.test(k)) delete map[k]; });
+    saveOverrides(map);
+    location.reload();
+  }
+
+  function toast2(msg) {
+    var el = document.createElement("div");
+    el.textContent = msg;
+    el.style.cssText = "position:fixed;left:50%;bottom:36px;transform:translateX(-50%);background:#111c33;" +
+      "color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;z-index:300;" +
+      "box-shadow:0 8px 30px rgba(0,0,0,.3);opacity:0;transition:opacity .25s ease";
+    document.body.appendChild(el);
+    requestAnimationFrame(function () { el.style.opacity = "1"; });
+    setTimeout(function () {
+      el.style.opacity = "0";
+      setTimeout(function () { el.remove(); }, 300);
+    }, 2200);
+  }
+
   function rerenderAll() {
     renderProfile();
     renderStats();
@@ -1042,6 +1286,18 @@
     if (ov) ov.addEventListener("click", function (e) { if (e.target === ov) closeResume(); });
     var ej = $("#exportJson");
     if (ej) ej.addEventListener("click", exportJson);
+
+    /* 简历在线编辑 */
+    var reOpen = $("#resumeEdit");
+    if (reOpen) reOpen.addEventListener("click", openResumeEditor);
+    var reSave = $("#resumeEditSave");
+    if (reSave) reSave.addEventListener("click", saveResumeEditor);
+    var reReset = $("#resumeEditReset");
+    if (reReset) reReset.addEventListener("click", resetResumeEditor);
+    var reCancel = $("#resumeEditCancel");
+    if (reCancel) reCancel.addEventListener("click", closeResumeEditor);
+    var reOv = $("#resumeEditOverlay");
+    if (reOv) reOv.addEventListener("click", function (e) { if (e.target === reOv) closeResumeEditor(); });
   }
 
   function initEditor() {
